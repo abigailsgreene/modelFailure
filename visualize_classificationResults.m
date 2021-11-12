@@ -63,7 +63,7 @@ for i = 1:length(np) % loop through predicted phenotypes
     figure(3); subplot(4,ceil(length(np)/2),i+length(np)); imagesc(corrmat_withinPhen_perm{i}); caxis([-1 1]); colormap(interp1(linspace(0,1,length(C)),C,linspace(0,1,250)));  xticks(1:length(task_names)); xticklabels(task_names); xtickangle(45); yticks(1:length(task_names)); yticklabels(task_names); ytickangle(45); colorbar; title(['Permuted data, ' np{i}]);
     %are correlations significantly higher for real than permuted?
     low_idx_taskmat = find(tril(ones(length(task_names),length(task_names)),-1));
-    [p_corrmat_withinPhen(i),~,stats_corrmat_withinPhen{i}] = ranksum(corrmat_withinPhen{i}(low_idx_taskmat),corrmat_withinPhen_perm{i}(low_idx_taskmat),'tail','right');
+    [pPaired_corrmat_withinPhen(i),~,statsPaired_corrmat_withinPhen{i}] = signrank(corrmat_withinPhen{i}(low_idx_taskmat),corrmat_withinPhen_perm{i}(low_idx_taskmat),'tail','right');
 end
 
 % fdr correct accuracy p vals

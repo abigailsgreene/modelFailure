@@ -127,14 +127,14 @@ for i = 1:length(names_dsd)
         [~,best_idx] = max(corr(dsd_result{i}.binary_subAccMat{end}(:,dsdmedian_idx),mean(dsd_result{i}.binary_subAccMat{end},2),'rows','complete')); % pick first iteration where misclassified subject set is most similar to (ie correlated with) overall misclassification frequency for GFC/that NP measure
         dsd_medianAcc_iter(i) = dsdmedian_idx(best_idx);
         clear best_idx
-    elseif length(dsdmedian_idx==1)
+    elseif length(dsdmedian_idx)==1
         dsd_medianAcc_iter(i) = dsdmedian_idx;
     end
     if length(uclamedian_idx)>1
         [~,best_idx] = max(corr(ucla_result{i}.binary_subAccMat{end}(:,uclamedian_idx),mean(ucla_result{i}.binary_subAccMat{end},2),'rows','complete')); % pick first iteration where misclassified subject set is most similar to (ie correlated with) overall misclassification frequency for GFC/that NP measure
         ucla_medianAcc_iter(i) = uclamedian_idx(best_idx);
         clear best_idx
-    elseif length(uclamedian_idx==1)
+    elseif length(uclamedian_idx)==1
         ucla_medianAcc_iter(i) = uclamedian_idx;
     end
     
@@ -174,7 +174,7 @@ end
 for phen_idx = 1:length(names_dsd)
     clearvars -except permtest idx_perm_* model_type names_* phen_idx dsd_fcvec* ucla_fcvec* binarized_phen* subset_* numiter* use_gfc train numedges exclude_outliers ucla_result dsd_result *medianAcc_iter homedir resultdir
     for iter = 1:numiters % 3 iters: all, WSC, WSM
-        clear train_mats train_phen test_mats test_phen
+        clear train_mats train_phen* test_mats test_phen*
         % if training with ucla
         if iter==1 && strcmp(train,'ucla') % train = all
             test_mats = dsd_fcvec_tot{phen_idx};
@@ -210,7 +210,7 @@ for phen_idx = 1:length(names_dsd)
         end
         
         edges_pos{iter} = zeros(size(train_mats,1),numiter2); edges_neg{iter} = zeros(size(train_mats,1),numiter2);% initialize arrays to store selected edges
-        
+        train_phen_real = train_phen; test_phen_real = test_phen;
         % If permutation testing, generate permutations
         if permtest==1
             for iter2=1:numiter2
@@ -229,8 +229,9 @@ for phen_idx = 1:length(names_dsd)
         
         for iter2 = 1:numiter2
             if permtest==1 % permute all phenotypic scores
-                train_phen = train_phen(idx_perm_train{phen_idx,iter}(:,iter2));
-                test_phen = test_phen(idx_perm_test{phen_idx,iter}(:,iter2));
+                clear train_phen test_phen
+                train_phen = train_phen_real(idx_perm_train{phen_idx,iter}(:,iter2));
+                test_phen = test_phen_real(idx_perm_test{phen_idx,iter}(:,iter2));
             else
             end
             
@@ -327,7 +328,7 @@ for phen_idx = 1:length(names_dsd)
                 correctSub_acc(iter2,iter) = (length(find(ismember(ucla_result{phen_idx}.correct_subs{ucla_medianAcc_iter(phen_idx),end},thigh_phigh{iter2,iter})))+length(find(ismember(ucla_result{phen_idx}.correct_subs{ucla_medianAcc_iter(phen_idx),end},tlow_plow{iter2,iter}))))/length(ucla_result{phen_idx}.correct_subs{ucla_medianAcc_iter(phen_idx),end});
                 misclassSub_acc(iter2,iter) = (length(find(ismember(ucla_result{phen_idx}.misclass_subs{ucla_medianAcc_iter(phen_idx),end},thigh_phigh{iter2,iter})))+length(find(ismember(ucla_result{phen_idx}.misclass_subs{ucla_medianAcc_iter(phen_idx),end},tlow_plow{iter2,iter}))))/length(ucla_result{phen_idx}.misclass_subs{ucla_medianAcc_iter(phen_idx),end});
             end
-            clearvars -except permtest idx_perm_* model_type train_mats train_phen test_mats test_phen train_subset_save names_* dsd_fcvec* ucla_fcvec* binarized_phen* subset_* thigh* tlow* numiter* use_gfc train numedges exclude_outliers ucla_result dsd_result *medianAcc_iter *Sub_acc acc_tot pred_* iter phen_idx edges_* *_edgeScore betas* trainmodel homedir resultdir
+            clearvars -except permtest idx_perm_* model_type train_mats train_phen train_phen_real test_mats test_phen test_phen_real train_subset_save names_* dsd_fcvec* ucla_fcvec* binarized_phen* subset_* thigh* tlow* numiter* use_gfc train numedges exclude_outliers ucla_result dsd_result *medianAcc_iter *Sub_acc acc_tot pred_* iter phen_idx edges_* *_edgeScore betas* trainmodel homedir resultdir
         end
     end
     % save out results
