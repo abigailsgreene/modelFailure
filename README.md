@@ -1,1 +1,2 @@
 # modelFailure
+Code from Greene et al., 2021, exploring predictive model failure. Included code performs 1) within-sample, LOOCV classification of phenotypic score, 2) cross-dataset classification of phenotypic score using the whole training sample, only participants correctly classified within-sample, and only participants misclassified within sample, 3) within-sample classification output visualization and internal validation analyses, and 4) comparison of misclassification frequency and mean score to various covariates.
