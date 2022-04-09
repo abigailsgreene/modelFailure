@@ -45,7 +45,7 @@ for i = 1:length(np) % loop through predicted phenotypes
     figure(1); subplot(2,ceil(length(np)/2),i); histogram(acc_low{i}(:,best_task(i)),'FaceColor',[0, 109, 119]./255,'FaceAlpha',0.8,'BinWidth',0.05,'Normalization','count'); hold on; histogram(acc_high{i}(:,best_task(i)),'FaceColor',[226, 149, 120]./255,'FaceAlpha',0.8,'BinWidth',0.05,'Normalization','count'); histogram(acc_low_perm{i}(:,best_task(i)),'FaceColor',[131, 197, 190]./255,'FaceAlpha',0.8,'BinWidth',0.05,'Normalization','count'); histogram(acc_high_perm{i}(:,best_task(i)),'FaceColor',[255, 221, 210]./255,'FaceAlpha',0.8,'BinWidth',0.05,'Normalization','count'); xlim([0 1]); hold off; title(['Acc., ' np{i} ', best task: ' task_names{best_task(i)}]);
     
     % calculate significance for best task performance for given NP measure
-    p_tot(i) = (length(find(acc_perm{i}(:,best_task(i))>median(acc{i}(:,best_task(i)))))+1)/(size(acc_perm{i}(:,best_task(i)),1)+1); % uncorrected p values
+    p_tot(i) = (length(find(acc_perm{i}(:,best_task(i))>=median(acc{i}(:,best_task(i)))))+1)/(size(acc_perm{i}(:,best_task(i)),1)+1); % uncorrected p values
     
     % visualize misclassification frequencies for all tasks for given np
     % measure, real (red) vs. permuted (blue), all tasks + GFC
